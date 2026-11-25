@@ -1,0 +1,206 @@
+# ─────────────────────────────────────────────────────────────
+# evals/questions.yaml
+# Purpose: test questions with known correct answers, used to measure how often
+#          the app gets the right result.
+# Used by: evals/run_evals.py (reads this file)
+#
+# Each entry:
+#   question:      what we ask the app (src/sql_agent.py → ask)
+#   expected_sql:  a hand-written query that gives the correct answer
+#   ordered:       true  = row order matters (e.g. "top 5", "by year"); the app may return
+#                          extra rows after the expected ones (e.g. all rows sorted for "which is highest")
+#                  false = any row order is fine (default)
+#   check_columns: optional list of expected_sql columns to compare. Default = all of them.
+#                  Used when the app may label things differently (e.g. '2016-01' vs 1 vs 'January')
+#                  but the numbers must still match.
+# Column NAMES never have to match – the checker matches columns by their VALUES.
+# ─────────────────────────────────────────────────────────────
+
+"Hotel bookings":
+  - question: How many bookings are in the dataset?
+    expected_sql: SELECT count(*) AS n FROM bookings
+
+  - question: What percentage of all bookings were cancelled?
+    expected_sql: SELECT round(100 * avg(is_canceled), 1) AS pct FROM bookings
+
+  - question: What is the cancellation rate, as a percentage, for each hotel?
+    expected_sql: SELECT hotel, round(100 * avg(is_canceled), 1) AS pct FROM bookings GROUP BY hotel
+
+  - question: How many bookings does each hotel have?
+    expected_sql: SELECT hotel, count(*) AS n FROM bookings GROUP BY hotel
+
+  - question: What is the average daily rate for each hotel, counting only bookings that were not cancelled?
+    expected_sql: SELECT hotel, round(avg(adr), 2) AS adr FROM bookings WHERE is_canceled = 0 GROUP BY hotel
+
+  - question: Which 5 countries had the most non-cancelled bookings?
+    ordered: true
+    expected_sql: |
+      SELECT country, count(*) AS n FROM bookings WHERE is_canceled = 0
+      GROUP BY country ORDER BY n DESC LIMIT 5
+
+  - question: How many bookings arrived in each year? Order by year.
+    ordered: true
+    expected_sql: |
+      SELECT year(arrival_date) AS yr, count(*) AS n FROM bookings GROUP BY yr ORDER BY yr
+
+  - question: Across all years, which arrival month (by name) had the most bookings?
+    ordered: true
+    expected_sql: |
+      SELECT arrival_date_month AS month FROM bookings
+      GROUP BY arrival_date_month ORDER BY count(*) DESC LIMIT 1
+
+  - question: What is the average lead time in days for each deposit type?
+    expected_sql: SELECT deposit_type, round(avg(lead_time), 2) AS lead FROM bookings GROUP BY deposit_type
+
+  - question: How many bookings were made by repeat guests?
+    expected_sql: SELECT count(*) AS n FROM bookings WHERE is_repeated_guest = 1
+
+  - question: What is the cancellation rate, as a percentage, for each deposit type?
+    expected_sql: |
+      SELECT deposit_type, round(100 * avg(is_canceled), 1) AS pct FROM bookings GROUP BY deposit_type
+
+  - question: What is the average total number of nights per booking for each hotel?
+    expected_sql: SELECT hotel, round(avg(total_nights), 2) AS nights FROM bookings GROUP BY hotel
+
+  - question: How many bookings were assigned a different room type than the one reserved?
+    expected_sql: SELECT count(*) AS n FROM bookings WHERE reserved_room_type <> assigned_room_type
+
+  - question: What are the top 3 market segments by number of bookings?
+    ordered: true
+    expected_sql: |
+      SELECT market_segment, count(*) AS n FROM bookings GROUP BY market_segment ORDER BY n DESC LIMIT 3
+
+  - question: For the City Hotel, what was the average daily rate in each month of 2016, in month order?
+    ordered: true
+    check_columns: [adr]
+    expected_sql: |
+      SELECT month(arrival_date) AS m, round(avg(adr), 2) AS adr FROM bookings
+      WHERE hotel = 'City Hotel' AND year(arrival_date) = 2016 GROUP BY m ORDER BY m
+
+  - question: How many bookings included at least one child or baby?
+    expected_sql: SELECT count(*) AS n FROM bookings WHERE coalesce(children, 0) + babies > 0
+
+  - question: What share of all bookings, as a percentage, came from the Online TA market segment?
+    expected_sql: |
+      SELECT round(100 * avg(CASE WHEN market_segment = 'Online TA' THEN 1 ELSE 0 END), 1) AS pct FROM bookings
+
+  - question: Which customer type has the highest average daily rate?
+    ordered: true
+    expected_sql: |
+      SELECT customer_type FROM bookings GROUP BY customer_type ORDER BY avg(adr) DESC LIMIT 1
+
+  - question: How many no-show reservations did each hotel have?
+    expected_sql: |
+      SELECT hotel, count(*) AS n FROM bookings WHERE reservation_status = 'No-Show' GROUP BY hotel
+
+  - question: What is the average number of special requests for cancelled versus not-cancelled bookings?
+    check_columns: [req]
+    expected_sql: |
+      SELECT is_canceled, round(avg(total_of_special_requests), 2) AS req FROM bookings GROUP BY is_canceled
+
+"TPC-H (sample business data)":
+  - question: How many customers are there?
+    expected_sql: SELECT count(*) AS n FROM customer
+
+  - question: How many orders were placed in each year? Order by year.
+    ordered: true
+    expected_sql: |
+      SELECT year(o_orderdate) AS yr, count(*) AS n FROM orders GROUP BY yr ORDER BY yr
+
+  - question: What is the total revenue by the customer's region, highest first?
+    ordered: true
+    expected_sql: |
+      SELECT r_name, round(sum(l_extendedprice * (1 - l_discount)), 2) AS revenue
+      FROM lineitem
+      JOIN orders ON o_orderkey = l_orderkey
+      JOIN customer ON c_custkey = o_custkey
+      JOIN nation ON n_nationkey = c_nationkey
+      JOIN region ON r_regionkey = n_regionkey
+      GROUP BY r_name ORDER BY revenue DESC
+
+  - question: Which 5 customers had the highest total order value (o_totalprice) in 1997?
+    ordered: true
+    expected_sql: |
+      SELECT c_name, round(sum(o_totalprice), 2) AS total FROM customer
+      JOIN orders ON o_custkey = c_custkey
+      WHERE year(o_orderdate) = 1997 GROUP BY c_name ORDER BY total DESC LIMIT 5
+
+  - question: How many orders are there for each order status?
+    expected_sql: SELECT o_orderstatus, count(*) AS n FROM orders GROUP BY o_orderstatus
+
+  - question: Which 3 nations have the most customers?
+    ordered: true
+    expected_sql: |
+      SELECT n_name, count(*) AS n FROM customer JOIN nation ON n_nationkey = c_nationkey
+      GROUP BY n_name ORDER BY n DESC LIMIT 3
+
+  - question: What is the average order total price for each order priority?
+    expected_sql: SELECT o_orderpriority, round(avg(o_totalprice), 2) AS avg_total FROM orders GROUP BY o_orderpriority
+
+  - question: How many line items were returned (return flag R)?
+    expected_sql: SELECT count(*) AS n FROM lineitem WHERE l_returnflag = 'R'
+
+  - question: How many suppliers are there in each region?
+    expected_sql: |
+      SELECT r_name, count(*) AS n FROM supplier
+      JOIN nation ON n_nationkey = s_nationkey JOIN region ON r_regionkey = n_regionkey
+      GROUP BY r_name
+
+  - question: Which ship mode has the most late deliveries, where the receipt date is after the commit date?
+    ordered: true
+    expected_sql: |
+      SELECT l_shipmode FROM lineitem WHERE l_receiptdate > l_commitdate
+      GROUP BY l_shipmode ORDER BY count(*) DESC LIMIT 1
+
+  - question: What is the total quantity shipped for each ship mode?
+    expected_sql: SELECT l_shipmode, sum(l_quantity) AS qty FROM lineitem GROUP BY l_shipmode
+
+  - question: What was the total revenue for orders placed in 1995?
+    expected_sql: |
+      SELECT round(sum(l_extendedprice * (1 - l_discount)), 2) AS revenue
+      FROM lineitem JOIN orders ON o_orderkey = l_orderkey WHERE year(o_orderdate) = 1995
+
+  - question: Which 5 part brands have the highest total revenue?
+    ordered: true
+    expected_sql: |
+      SELECT p_brand, round(sum(l_extendedprice * (1 - l_discount)), 2) AS revenue
+      FROM lineitem JOIN part ON p_partkey = l_partkey
+      GROUP BY p_brand ORDER BY revenue DESC LIMIT 5
+
+  - question: How many customers have never placed an order?
+    expected_sql: |
+      SELECT count(*) AS n FROM customer WHERE c_custkey NOT IN (SELECT o_custkey FROM orders)
+
+  - question: What is the average number of line items per order?
+    expected_sql: |
+      SELECT round(avg(cnt), 2) AS avg_items FROM (SELECT count(*) AS cnt FROM lineitem GROUP BY l_orderkey)
+
+  - question: Which customer market segment has the most customers?
+    ordered: true
+    expected_sql: |
+      SELECT c_mktsegment FROM customer GROUP BY c_mktsegment ORDER BY count(*) DESC LIMIT 1
+
+  - question: How many orders were placed in each month of 1996, in month order?
+    ordered: true
+    check_columns: [n]
+    expected_sql: |
+      SELECT month(o_orderdate) AS m, count(*) AS n FROM orders
+      WHERE year(o_orderdate) = 1996 GROUP BY m ORDER BY m
+
+  - question: Which customer nation has the highest total order value (o_totalprice)?
+    ordered: true
+    expected_sql: |
+      SELECT n_name FROM orders JOIN customer ON c_custkey = o_custkey
+      JOIN nation ON n_nationkey = c_nationkey GROUP BY n_name ORDER BY sum(o_totalprice) DESC LIMIT 1
+
+  - question: How many distinct parts were ordered by customers in GERMANY?
+    expected_sql: |
+      SELECT count(DISTINCT l_partkey) AS n FROM lineitem
+      JOIN orders ON o_orderkey = l_orderkey JOIN customer ON c_custkey = o_custkey
+      JOIN nation ON n_nationkey = c_nationkey WHERE n_name = 'GERMANY'
+
+  - question: What is the average supply cost for suppliers in each nation of the EUROPE region?
+    expected_sql: |
+      SELECT n_name, round(avg(ps_supplycost), 2) AS cost FROM partsupp
+      JOIN supplier ON s_suppkey = ps_suppkey JOIN nation ON n_nationkey = s_nationkey
+      JOIN region ON r_regionkey = n_regionkey WHERE r_name = 'EUROPE' GROUP BY n_name

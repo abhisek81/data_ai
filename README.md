@@ -17,6 +17,7 @@ data_ai/
 | Project | Description |
 |---------|-------------|
 | [portfolio](projects/portfolio/) | Personal portfolio website (static HTML/CSS, no build step) |
+| [ask-your-warehouse](projects/ask-your-warehouse/) | Ask questions about a database in plain English; Claude writes safe, read-only SQL (Python, DuckDB, Streamlit) |
 
 ## Getting started
 

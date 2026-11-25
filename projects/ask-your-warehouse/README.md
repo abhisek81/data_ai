@@ -1,5 +1,7 @@
 # 🔎 Ask Your Warehouse
 
+**▶ [Try it live: ask-your-warehouse-abhisek.streamlit.app](https://ask-your-warehouse-abhisek.streamlit.app)** (no sign-up needed; if the app has been asleep, click "wake up" and wait about 30 seconds)
+
 Ask questions about a database in plain English. Claude writes the SQL, a safety check makes sure it only **reads** data, DuckDB runs it, and you get a plain-English answer, a chart, the result table, and the exact SQL that was used.
 
 ![Screenshot: "Which market segment has the highest cancellation rate in summer?" answered with a bar chart](docs/screenshot.jpg)

@@ -16,7 +16,7 @@ data_ai/
 
 | Project | Description |
 |---------|-------------|
-| _none yet_ | |
+| [portfolio](projects/portfolio/) | Personal portfolio website (static HTML/CSS, no build step) |
 
 ## Getting started
 

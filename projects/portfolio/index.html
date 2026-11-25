@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Abhisek Mohanty · Senior Data Engineer</title>
+<meta name="description" content="Abhisek Mohanty, Senior Data Engineer with 11 years of experience building batch and streaming data platforms on AWS and Snowflake.">
+<meta property="og:title" content="Abhisek Mohanty · Senior Data Engineer">
+<meta property="og:description" content="11 years designing and modernizing enterprise-scale data platforms on AWS, Snowflake, Spark, Kafka, Airflow and DBT.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --surface: #ffffff;
+    --surface-2: #eef1f5;
+    --text: #0f172a;
+    --muted: #526077;
+    --border: #dde3ea;
+    --accent: #0b6bcb;
+    --accent-2: #0e9f8e;
+    --accent-soft: rgba(11, 107, 203, 0.1);
+    --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+    --radius: 14px;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1017;
+      --surface: #111821;
+      --surface-2: #17202b;
+      --text: #e6ebf2;
+      --muted: #94a3b8;
+      --border: #243041;
+      --accent: #4ea3ff;
+      --accent-2: #2dd4bf;
+      --accent-soft: rgba(78, 163, 255, 0.12);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1017;
+    --surface: #111821;
+    --surface-2: #17202b;
+    --text: #e6ebf2;
+    --muted: #94a3b8;
+    --border: #243041;
+    --accent: #4ea3ff;
+    --accent-2: #2dd4bf;
+    --accent-soft: rgba(78, 163, 255, 0.12);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  /* Nav */
+  header.nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 16px; }
+  .brand { font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+  .brand span { color: var(--accent); }
+  .nav ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; }
+  .nav ul a { color: var(--muted); font-size: 14px; font-weight: 500; }
+  .nav ul a:hover { color: var(--text); text-decoration: none; }
+  .theme-btn {
+    border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: grid; place-items: center;
+  }
+  .theme-btn svg { width: 18px; height: 18px; }
+  .nav-right { display: flex; align-items: center; gap: 22px; }
+
+  /* Hero */
+  .hero { padding: 88px 0 56px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 500 13px/1 var(--mono); color: var(--accent-2);
+    background: color-mix(in srgb, var(--accent-2) 12%, transparent);
+    padding: 7px 12px; border-radius: 999px;
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-2); }
+  h1 { font-size: clamp(38px, 6vw, 60px); line-height: 1.05; letter-spacing: -0.03em; margin: 20px 0 16px; font-weight: 800; }
+  h1 .role { display: block; color: var(--muted); font-weight: 600; font-size: 0.5em; letter-spacing: -0.015em; margin-top: 10px; }
+  .lede { font-size: 19px; color: var(--muted); max-width: 680px; margin: 0 0 28px; }
+  .lede strong { color: var(--text); font-weight: 600; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 10px;
+    font-weight: 600; font-size: 15px; border: 1px solid var(--border); color: var(--text); background: var(--surface);
+  }
+  .btn:hover { text-decoration: none; border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* Pipeline strip */
+  .pipeline {
+    margin-top: 56px; display: flex; align-items: center; gap: 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px 20px; box-shadow: var(--shadow); overflow: hidden;
+  }
+  .stage { flex: 1; min-width: 0; text-align: center; }
+  .stage b { display: block; font-size: 13px; font-weight: 600; }
+  .stage small { display: block; color: var(--muted); font: 12px/1.4 var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .link { flex: 0 0 40px; height: 2px; position: relative; background: var(--border); overflow: hidden; }
+  .link::after {
+    content: ""; position: absolute; top: 0; left: -30%; width: 30%; height: 100%;
+    background: linear-gradient(90deg, transparent, var(--accent-2), transparent);
+    animation: flow 1.8s linear infinite;
+  }
+  @keyframes flow { to { left: 100%; } }
+  @media (prefers-reduced-motion: reduce) { .link::after { animation: none; } }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .stat .num { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
+  .stat .lbl { color: var(--muted); font-size: 14px; line-height: 1.4; }
+
+  /* Sections */
+  section { padding: 64px 0; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px; }
+  .sec-head .idx { font: 500 13px/1 var(--mono); color: var(--accent); }
+  h2 { font-size: 28px; letter-spacing: -0.02em; margin: 0; }
+
+  /* Project cards */
+  .projects { display: grid; gap: 20px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px; box-shadow: var(--shadow);
+  }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .card h3 { margin: 0 0 4px; font-size: 20px; letter-spacing: -0.01em; }
+  .client { font: 500 12px/1 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .impact { font: 600 13px/1 var(--mono); color: var(--accent-2); background: color-mix(in srgb, var(--accent-2) 12%, transparent); padding: 8px 10px; border-radius: 8px; white-space: nowrap; }
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 18px 0; }
+  .flow span { font: 500 12.5px/1 var(--mono); padding: 7px 10px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border); }
+  .flow i { color: var(--muted); font-style: normal; font-size: 13px; }
+  .card ul { margin: 0; padding-left: 18px; color: var(--muted); }
+  .card li { margin: 6px 0; }
+  .card li strong { color: var(--text); font-weight: 600; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--border); }
+  .job { position: relative; margin-bottom: 34px; }
+  .job:last-child { margin-bottom: 0; }
+  .job::before {
+    content: ""; position: absolute; left: -28px; top: 6px; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--bg); border: 3px solid var(--accent);
+  }
+  .job-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .job h3 { margin: 0; font-size: 19px; }
+  .job .company { color: var(--accent); }
+  .when { font: 500 13px/1.6 var(--mono); color: var(--muted); }
+  .engagements { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .engagements li {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px;
+    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .engagements .what { font-weight: 600; }
+  .engagements .what em { font-style: normal; color: var(--muted); font-weight: 500; }
+  .engagements p { margin: 4px 0 0; color: var(--muted); font-size: 15px; flex-basis: 100%; }
+
+  /* Skills */
+  .skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .skill-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .skill-group h3 { margin: 0 0 12px; font-size: 15px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips span { font-size: 13.5px; padding: 6px 11px; border-radius: 999px; background: var(--accent-soft); color: var(--text); }
+
+  /* Creds */
+  .creds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .cred { display: flex; gap: 16px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .cred .icon { flex: 0 0 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+  .cred .icon svg { width: 24px; height: 24px; }
+  .cred h3 { margin: 0; font-size: 16px; }
+  .cred p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+
+  /* Contact */
+  .contact { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 48px 24px; box-shadow: var(--shadow); }
+  .contact h2 { font-size: 32px; }
+  .contact p { color: var(--muted); max-width: 520px; margin: 12px auto 24px; }
+  .contact .cta { justify-content: center; }
+
+  footer { padding: 36px 0 48px; color: var(--muted); font-size: 14px; text-align: center; }
+
+  @media (max-width: 820px) {
+    .nav ul { display: none; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .skills, .creds { grid-template-columns: 1fr; }
+    .pipeline { flex-direction: column; align-items: stretch; gap: 0; padding: 14px 18px; }
+    .stage { text-align: left; padding: 8px 0; }
+    .link { flex-basis: 16px; width: 2px; height: 16px; margin-left: 10px; }
+    .link::after { animation: none; }
+  }
+  @media (max-width: 480px) {
+    .wrap { padding: 0 16px; }
+    .hero { padding: 56px 0 40px; }
+    .lede { font-size: 17px; }
+    .card { padding: 20px; }
+    .stat .num { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">Abhisek<span>.</span></a>
+    <div class="nav-right">
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+
+    <!-- Hero -->
+    <div class="hero">
+      <span class="eyebrow"><span class="dot"></span>Bengaluru, India · AWS Certified Data Engineer</span>
+      <h1>Abhisek Mohanty<span class="role">Senior Data Engineer</span></h1>
+      <p class="lede">
+        I design and modernize <strong>enterprise-scale data platforms</strong>. 11 years building batch and streaming
+        pipelines on <strong>AWS, Snowflake, Spark, Kafka, Airflow and DBT</strong> across hospitality, banking,
+        finance and aviation.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="#contact">Get in touch</a>
+        <a class="btn" href="https://www.linkedin.com/in/iabhisekm/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          LinkedIn
+        </a>
+        <a class="btn" href="https://github.com/abhisek81" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.3-3.1-.2-.4-.6-1.6 0-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.9 1.1.9 2.2v3.3c0 .3.1.7.8.6A12 12 0 0 0 12 .3"/></svg>
+          GitHub
+        </a>
+      </div>
+
+      <div class="pipeline" aria-label="What I build: sources to analytics">
+        <div class="stage"><b>Sources</b><small>APIs · files · Kafka</small></div>
+        <div class="link"></div>
+        <div class="stage"><b>Ingest</b><small>Lambda · Snowpipe</small></div>
+        <div class="link"></div>
+        <div class="stage"><b>Process</b><small>Spark · DBT · Airflow</small></div>
+        <div class="link"></div>
+        <div class="stage"><b>Store</b><small>Snowflake · Iceberg</small></div>
+        <div class="link"></div>
+        <div class="stage"><b>Serve</b><small>BI · analytics</small></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="num">11 yrs</div><div class="lbl">building production data platforms</div></div>
+        <div class="stat"><div class="num">~30%</div><div class="lbl">less ETL processing time after cloud migration</div></div>
+        <div class="stat"><div class="num">35%</div><div class="lbl">faster ETL runtimes from SQL optimization</div></div>
+        <div class="stat"><div class="num">~40%</div><div class="lbl">less manual production troubleshooting</div></div>
+      </div>
+    </div>
+
+    <!-- Featured work -->
+    <section id="work">
+      <div class="sec-head"><span class="idx">01</span><h2>Featured work</h2></div>
+      <div class="projects">
+
+        <article class="card">
+          <div class="card-top">
+            <div>
+              <div class="client">Hyatt · via Wipro</div>
+              <h3>Legacy ETL migration to AWS &amp; Snowflake</h3>
+            </div>
+            <span class="impact">~30% faster ETL</span>
+          </div>
+          <div class="flow">
+            <span>On-prem ETL</span><i>→</i><span>S3</span><i>→</i><span>EMR / Glue / PySpark</span><i>→</i><span>Iceberg</span><i>→</i><span>Snowflake</span><i>→</i><span>DBT + Airflow</span>
+          </div>
+          <ul>
+            <li>Led the <strong>end-to-end migration</strong> of legacy on-prem ETL to AWS and Snowflake, cutting infrastructure overhead.</li>
+            <li>Built <strong>Apache Iceberg lakehouse tables</strong> with ACID transactions, schema evolution, partition optimization and time travel.</li>
+            <li>Added centralized audit logging, control tables, data-quality checks and retries, reducing manual troubleshooting by <strong>~40%</strong>.</li>
+            <li>Optimized SQL transformations on large datasets for <strong>35% faster runtimes</strong> across production pipelines.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div>
+              <div class="client">Hyatt · via Wipro</div>
+              <h3>API-driven near real-time ingestion</h3>
+            </div>
+            <span class="impact">hourly → minutes</span>
+          </div>
+          <div class="flow">
+            <span>REST API</span><i>→</i><span>API Gateway</span><i>→</i><span>Lambda</span><i>→</i><span>S3</span><i>→</i><span>SNS</span><i>→</i><span>Snowflake</span>
+          </div>
+          <ul>
+            <li>Designed a <strong>serverless, event-driven</strong> architecture that lets source systems push data through REST APIs.</li>
+            <li>Schema validation, light transformations, error handling and automated retries handle <strong>thousands of payloads a day</strong> with minimal intervention.</li>
+            <li>Cut data latency from <strong>hourly batches to near real-time</strong>, so reporting sees new data within minutes.</li>
+            <li>Automated Dev → UAT → Prod deployments with <strong>GitLab CI/CD</strong> and <strong>CloudFormation</strong>.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-top">
+            <div>
+              <div class="client">Hyatt · via Wipro</div>
+              <h3>SynXis reservation streaming pipeline</h3>
+            </div>
+            <span class="impact">Snowflake-native streaming</span>
+          </div>
+          <div class="flow">
+            <span>Kafka</span><i>→</i><span>Sink Connector</span><i>→</i><span>VARIANT raw</span><i>→</i><span>Dynamic Tables</span><i>→</i><span>Tasks / MERGE</span><i>→</i><span>ThoughtSpot</span>
+          </div>
+          <ul>
+            <li>Streamed JSON business events from <strong>Kafka into Snowflake</strong>, keeping original payloads for audit and replay.</li>
+            <li>Used <strong>Dynamic Tables</strong> to parse and standardize semi-structured events, then Tasks/MERGE for incremental upserts.</li>
+            <li>Replaced complex ETL with a Snowflake-native design that offers <strong>low latency with built-in recovery</strong>.</li>
+            <li>Fed reservation and operations dashboards in <strong>ThoughtSpot</strong>.</li>
+          </ul>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience">
+      <div class="sec-head"><span class="idx">02</span><h2>Experience</h2></div>
+      <div class="timeline">
+
+        <div class="job">
+          <div class="job-head">
+            <h3>Senior Data Engineer · <span class="company">Wipro</span></h3>
+            <span class="when">Apr 2021 – Present</span>
+          </div>
+          <ul class="engagements">
+            <li>
+              <span class="what">Hyatt <em>· cloud migration, real-time ingestion, streaming</em></span>
+              <p>Technical lead and architecture owner for AWS and Snowflake data platforms. See featured work above.</p>
+            </li>
+          </ul>
+        </div>
+
+        <div class="job">
+          <div class="job-head">
+            <h3>Data Engineer · <span class="company">Decision Minds</span></h3>
+            <span class="when">Nov 2018 – Apr 2021</span>
+          </div>
+          <ul class="engagements">
+            <li>
+              <span class="what">Southwest Airlines <em>· Flight Data Platform</em></span>
+              <span class="when">Aug 2019 – Apr 2021</span>
+              <p>ETL for flight planning, tracking, load planning and gate assignment, moving Oracle data into Snowflake with Informatica, SQL and Python. Automated S3 ingestion and archival with shell scripts.</p>
+            </li>
+            <li>
+              <span class="what">VMware <em>· Callidus &amp; Commissions Reporting</em></span>
+              <span class="when">Nov 2018 – Jul 2019</span>
+              <p>Pipelines for commissions and incentive reporting, delivering accurate and timely data to finance teams.</p>
+            </li>
+          </ul>
+        </div>
+
+        <div class="job">
+          <div class="job-head">
+            <h3>ETL Developer · <span class="company">Softtek</span></h3>
+            <span class="when">Jun 2015 – Oct 2018</span>
+          </div>
+          <ul class="engagements">
+            <li>
+              <span class="what">VMware <em>· New Revenue Standard</em></span>
+              <span class="when">Feb 2017 – Oct 2018</span>
+              <p>Data pipelines for revenue recognition and compliance reporting.</p>
+            </li>
+            <li>
+              <span class="what">GE Capital <em>· Treasury</em></span>
+              <span class="when">Jun 2015 – Jan 2017</span>
+              <p>ETL workflows for treasury and financial data used in downstream reporting.</p>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills">
+      <div class="sec-head"><span class="idx">03</span><h2>Skills</h2></div>
+      <div class="skills">
+        <div class="skill-group">
+          <h3>AWS</h3>
+          <div class="chips"><span>S3</span><span>EMR</span><span>Glue</span><span>Lambda</span><span>API Gateway</span><span>SNS</span><span>Redshift</span><span>EC2</span><span>CloudFormation</span><span>CloudWatch</span><span>Secrets Manager</span></div>
+        </div>
+        <div class="skill-group">
+          <h3>Snowflake</h3>
+          <div class="chips"><span>Snowpipe</span><span>Dynamic Tables</span><span>Streams</span><span>Tasks</span><span>COPY</span><span>Zero-copy Clone</span><span>Time Travel</span></div>
+        </div>
+        <div class="skill-group">
+          <h3>Big data &amp; streaming</h3>
+          <div class="chips"><span>Apache Spark</span><span>PySpark</span><span>Kafka</span><span>Apache Iceberg</span></div>
+        </div>
+        <div class="skill-group">
+          <h3>Languages</h3>
+          <div class="chips"><span>Python</span><span>SQL</span><span>Shell</span><span>AWS CLI</span><span>SnowSQL</span></div>
+        </div>
+        <div class="skill-group">
+          <h3>Orchestration &amp; ETL</h3>
+          <div class="chips"><span>Airflow</span><span>DBT</span><span>Informatica PowerCenter</span><span>IICS</span><span>HVR</span><span>Autosys</span></div>
+        </div>
+        <div class="skill-group">
+          <h3>Databases &amp; tooling</h3>
+          <div class="chips"><span>Snowflake</span><span>Redshift</span><span>Oracle</span><span>SQL Server</span><span>DB2</span><span>PostgreSQL</span><span>GitLab CI/CD</span><span>Datadog</span><span>Jira</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Credentials -->
+    <section id="credentials">
+      <div class="sec-head"><span class="idx">04</span><h2>Certification &amp; education</h2></div>
+      <div class="creds">
+        <a class="cred" href="https://www.credly.com/badges/eb75e885-df3f-4db6-bed1-01e445e63bee" target="_blank" rel="noopener">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13 17 22l-5-3-5 3 1.5-9"/></svg></div>
+          <div><h3 style="color:var(--text)">AWS Certified Data Engineer – Associate</h3><p>Amazon Web Services · verify on Credly ↗</p></div>
+        </a>
+        <div class="cred">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></div>
+          <div><h3>B.Tech, Computer Science</h3><p>BPUT, Odisha</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="contact">
+        <h2>Let's talk data</h2>
+        <p>Open to conversations about data platform architecture, cloud migrations and streaming pipelines.</p>
+        <div class="cta">
+          <a class="btn primary" href="mailto:iamabhisek.mohanty@gmail.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+            iamabhisek.mohanty@gmail.com
+          </a>
+          <a class="btn" href="https://www.linkedin.com/in/iabhisekm/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn" href="https://github.com/abhisek81" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© <span id="year">2026</span> Abhisek Mohanty</div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    try {
+      var saved = localStorage.getItem("theme");
+      if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+    } catch (e) {}
+    document.getElementById("themeBtn").addEventListener("click", function () {
+      var current = root.getAttribute("data-theme") ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      var next = current === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("theme", next); } catch (e) {}
+    });
+    document.getElementById("year").textContent = new Date().getFullYear();
+  })();
+</script>
+</body>
+</html>

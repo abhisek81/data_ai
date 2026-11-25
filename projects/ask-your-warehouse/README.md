@@ -87,6 +87,21 @@ python cli.py --dataset tpch --model sonnet "Total revenue by region"
 python -m evals.run_evals                               # accuracy test (~2 cents with Haiku)
 ```
 
+## Deploy online (Streamlit Community Cloud, free)
+
+1. Sign in at [share.streamlit.io](https://share.streamlit.io) with GitHub, then click **Create app → Deploy a public app from GitHub**.
+2. Set **Repository** `abhisek81/data_ai`, **Branch** `main`, and **Main file path** `projects/ask-your-warehouse/app.py`.
+3. Under **Advanced settings**, pick Python 3.12 and paste into **Secrets**:
+   ```toml
+   ANTHROPIC_API_KEY = "sk-ant-..."   # ideally a separate key just for this app
+   DAILY_BUDGET_USD = "1.00"
+   MAX_QUESTIONS_PER_SESSION = "15"
+   ALLOW_SONNET = "false"
+   ```
+4. Click **Deploy**. The first start installs the libraries and builds the datasets (a few minutes).
+
+The daily budget lives in the server's memory and resets if the app restarts, so also set a monthly spend limit in the Anthropic Console as a backstop.
+
 ## How accuracy is measured
 
 Each test question has a hand-written correct SQL query. The checker runs both and compares the **result values**, not the SQL text, so different but equivalent queries still pass. Column names don't need to match, numbers may differ by up to 1% (rounding), and for ordered questions ("top 5", "by year") the row order must match.
@@ -95,9 +110,13 @@ The test questions are phrased clearly. Vaguer questions ("which hotel is better
 
 ## Settings
 
+Set these as environment variables locally, or in the app's **Secrets** on Streamlit Cloud.
+
 | Setting | Where | Default |
 |---|---|---|
 | Model | sidebar (Haiku 5.5 / Sonnet 5.5) | Haiku 5.5 |
-| Questions per visitor session | `MAX_QUESTIONS_PER_SESSION` env var | 25 |
+| Offer Sonnet at all | `ALLOW_SONNET` | `true` |
+| Questions per visitor session | `MAX_QUESTIONS_PER_SESSION` | 25 |
+| Spending cap per day, all visitors combined (USD) | `DAILY_BUDGET_USD` | 1.00 |
 | Max rows fetched | `MAX_ROWS` in `src/sql_agent.py` | 1,000 |
 | Self-correction retries | `MAX_RETRIES` in `src/sql_agent.py` | 2 |

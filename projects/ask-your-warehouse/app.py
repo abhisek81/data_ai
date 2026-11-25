@@ -6,6 +6,7 @@
 # Uses:    src/sql_agent.py (ask, MODELS), src/data.py (DATASETS, db_path, build_all)
 # ─────────────────────────────────────────────────────────────
 
+import datetime as dt                           # today's date, for the daily budget
 import os                                       # reads optional settings from environment variables
 
 import pandas as pd
@@ -14,9 +15,26 @@ import streamlit as st                          # turns this Python script into 
 from src.data import DATASETS, build_all, db_path   # dataset list + database builder → src/data.py
 from src.sql_agent import MODELS, ask                # the engine → src/sql_agent.py
 
-# Most questions one visitor can ask per browser session. Protects your API credits once the app is online.
-# Change it without editing code by setting the MAX_QUESTIONS_PER_SESSION environment variable.
+# ── Settings from Streamlit Cloud "Secrets" ──────────────────
+# Online, the API key and limits are typed into the app's Secrets box on share.streamlit.io
+# (never into the code). Copy them into environment variables, which is where
+# src/sql_agent.py (Claude client) and the settings below look. Locally there is usually
+# no secrets file, so the .env file is used instead (loaded by src/sql_agent.py).
+for _name in ("ANTHROPIC_API_KEY", "MAX_QUESTIONS_PER_SESSION", "DAILY_BUDGET_USD", "ALLOW_SONNET"):
+    try:
+        if _name in st.secrets:
+            os.environ.setdefault(_name, str(st.secrets[_name]))
+    except Exception:            # no secrets file at all (normal when running locally)
+        break
+
+# Most questions one visitor can ask per browser session.
 MAX_QUESTIONS = int(os.getenv("MAX_QUESTIONS_PER_SESSION", "25"))
+# Most the whole app may spend on Claude per day, across ALL visitors (US dollars).
+# Reloading the page resets the per-session count above, but not this.
+DAILY_BUDGET_USD = float(os.getenv("DAILY_BUDGET_USD", "1.00"))
+# Set ALLOW_SONNET=false online to offer only the cheaper Haiku model.
+ALLOW_SONNET = os.getenv("ALLOW_SONNET", "true").lower() == "true"
+AVAILABLE_MODELS = {k: v for k, v in MODELS.items() if ALLOW_SONNET or "haiku" in v}   # MODELS → src/sql_agent.py
 
 # Clickable example questions shown for each dataset (keys must match src/data.py DATASETS).
 EXAMPLES = {
@@ -50,6 +68,26 @@ def ensure_data() -> bool:
 
 ensure_data()
 
+
+@st.cache_resource
+def spend_tracker() -> dict:
+    """One shared record of today's spending, the same object for every visitor.
+
+    It lives in the server's memory, so it resets if the app restarts (e.g. after sleeping).
+    Your Anthropic Console spend limit is the backstop for that case.
+    """
+    return {"day": None, "spent": 0.0}
+
+
+def budget_left() -> bool:
+    """True if today's shared budget isn't used up yet. Starts a fresh count each new day."""
+    tracker = spend_tracker()
+    today = dt.date.today()
+    if tracker["day"] != today:                                        # new day → reset the count
+        tracker["day"], tracker["spent"] = today, 0.0
+    return tracker["spent"] < DAILY_BUDGET_USD
+
+
 # st.session_state survives between clicks for the same visitor. Set defaults the first time.
 st.session_state.setdefault("history", [])       # list of Answer objects, newest first
 st.session_state.setdefault("question", "")      # text currently in the question box
@@ -60,7 +98,7 @@ with st.sidebar:
     st.header("Settings")
     dataset = st.selectbox("Dataset", list(DATASETS))                  # names from src/data.py
     st.caption(DATASETS[dataset]["about"])                             # one-line description
-    model_label = st.radio("Model", list(MODELS))                      # Haiku / Sonnet → src/sql_agent.py
+    model_label = st.radio("Model", list(AVAILABLE_MODELS))            # Haiku (and Sonnet if allowed) → src/sql_agent.py
     st.divider()
     asked = len(st.session_state.history)
     st.caption(f"Questions this session: {asked} / {MAX_QUESTIONS}")
@@ -91,9 +129,12 @@ with st.form("ask_form"):                                              # a form 
 if submitted and question.strip():
     if len(st.session_state.history) >= MAX_QUESTIONS:
         st.warning(f"You've reached the limit of {MAX_QUESTIONS} questions for this session.")
+    elif not budget_left():
+        st.warning("This demo has reached its daily usage limit. Please try again tomorrow.")
     else:
         with st.spinner("Writing SQL and running it..."):
-            result = ask(question.strip(), dataset, MODELS[model_label])   # the engine → src/sql_agent.py
+            result = ask(question.strip(), dataset, AVAILABLE_MODELS[model_label])   # the engine → src/sql_agent.py
+        spend_tracker()["spent"] += result.cost_usd                    # add this question's cost to today's total
         st.session_state.history.insert(0, result)                     # newest result goes on top
         st.rerun()                                                     # redraw so the sidebar counter updates too
 

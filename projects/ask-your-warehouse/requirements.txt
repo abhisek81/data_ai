@@ -1,0 +1,13 @@
+# ─────────────────────────────────────────────────────────────
+# requirements.txt
+# Purpose: the Python libraries this project needs.
+# Install with:  pip install -r requirements.txt   (inside the project's .venv)
+# ─────────────────────────────────────────────────────────────
+
+anthropic>=1.0        # Claude API client        → used in src/sql_agent.py
+duckdb>=1.1           # local SQL database       → used in src/data.py, src/sql_agent.py
+sqlglot>=25.0         # parses SQL to check it   → used in src/guard.py
+pandas>=2.2           # tables / DataFrames      → used in src/sql_agent.py, app.py, evals/run_evals.py
+streamlit>=1.40       # the web page             → used in app.py
+python-dotenv>=1.0    # reads the API key from .env → used in src/sql_agent.py
+pyyaml>=6.0           # reads the test questions → used in evals/run_evals.py

@@ -34,3 +34,6 @@ mlruns/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Claude Code local settings (preview config etc.)
+.claude/
